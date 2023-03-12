@@ -12,6 +12,14 @@ public final class SignPosition {
 		return new SignPosition(ra.toDegrees().simplify());
 	}
 	
+	public static SignPosition degrees(double degrees) {
+		return new SignPosition(Angle.degrees(degrees).simplify());
+	}
+	
+	public static SignPosition from(Angle angle) {
+		return new SignPosition(angle.simplify());
+	}
+	
 	private SignPosition(Angle angle) {
 		this.angle = angle;
 	}
@@ -19,6 +27,10 @@ public final class SignPosition {
 	public Sign sign() {
 	  return Sign.from(angle);
 	}
+	
+	public Angle angle() {
+		  return angle;
+		}
 
 	@Override
 	public String toString() {
@@ -40,5 +52,10 @@ public final class SignPosition {
 	@Override
 	public int hashCode() {
 		return angle.hashCode();
+	}
+
+	
+	public SignPosition oposite() {
+		return SignPosition.from(angle.plus(Angle.degrees(180.0)).simplify());
 	}
 }

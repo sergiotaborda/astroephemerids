@@ -10,7 +10,7 @@ import astroephemeris.math.Angle;
 import astroephemeris.math.Number;
 import astroephemeris.math.TimeExpantion;
 
-class HeliocentricDynamics {
+public class HeliocentricDynamics {
 
  
 	/**
@@ -21,6 +21,9 @@ class HeliocentricDynamics {
 	 */
     public static CubicCoordinate positionFrom(ObservationPoint point, Astro p) {
 
+    	if (p == null) {
+    		return CubicCoordinate.ORIGIN;
+    	}
         Number T = point.factorT();
 
         // longitude of ascending node

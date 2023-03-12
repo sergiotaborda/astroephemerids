@@ -1,5 +1,8 @@
 package astroephemeris.coordinates;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import astroephemeris.math.Angle;
 import astroephemeris.math.Number;
 
@@ -69,5 +72,15 @@ public class RightAscention {
 	}
 
 
+	public LocalTime toTime() {
+		var h = this.toHours().toDouble();
+		var hh = Math.floor(h);
+		var m = (h - hh) * 60;
+		var mm =  Math.floor(m);
+		var s = (m - mm) * 60;
+		var ss =  Math.floor(s);
+		
+		return LocalTime.of((int)hh, (int)mm, (int)ss);
+	}
 
 }

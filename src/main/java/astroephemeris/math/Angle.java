@@ -2,6 +2,8 @@ package astroephemeris.math;
 
 public final class Angle implements AdditiveGroup<Angle> , ScalableGroup<Angle>, Comparable<Angle>{
 	
+	public static Angle HALF_CIRCLE = Angle.degrees(180.0);
+	public static Angle CIRCLE = Angle.degrees(360.0);
 	
 	public static Angle degrees(double degrees) {
 		return new Angle(Number.from(degrees));
@@ -44,22 +46,26 @@ public final class Angle implements AdditiveGroup<Angle> , ScalableGroup<Angle>,
         return atan;
 	}
 	
-	public static Angle acos2d(Number numerator, Number denominator) {
-		
-		if (denominator.isZero() && numerator.isZero()) {
-			throw new IllegalArgumentException("Cannot calculate acos2d(0,0)");
-		}
-		
-		if (denominator.isZero() && !numerator.isZero()) {
-			return Angle.degrees(90);
-		} else if (denominator.isPositive()) {
-			return atan2d(numerator, denominator);
-		}
-        		
-        return atan2d(numerator, denominator).plus(Angle.degrees(90));
-	}
+//	public static Angle acos2d(Number numerator, Number denominator) {
+//		
+//		if (denominator.isZero() && numerator.isZero()) {
+//			throw new IllegalArgumentException("Cannot calculate acos2d(0,0)");
+//		}
+//		
+//		if (denominator.isZero() && !numerator.isZero()) {
+//			return Angle.degrees(90);
+//		} else if (denominator.isPositive()) {
+//			return atan2d(numerator, denominator);
+//		}
+//        		
+//        return atan2d(numerator, denominator).plus(Angle.degrees(90));
+//	}
 	
 
+	public static Angle acos(Number value) {
+		return Angle.radians(Math.acos(value.toDouble()));
+	}
+	
 	private final Number valueInDegrees;
 
 	Angle(Number value) {
@@ -179,8 +185,16 @@ public final class Angle implements AdditiveGroup<Angle> , ScalableGroup<Angle>,
 
 	@Override
 	public int compareTo(Angle other) {
+
 		return valueInDegrees.compareTo(other.valueInDegrees);
 	}
+	
+
+	public static Angle of(int degrees, int minutes) {
+		return degrees(degrees + minutes / 60d);
+	}
+
+
 
 	
 
