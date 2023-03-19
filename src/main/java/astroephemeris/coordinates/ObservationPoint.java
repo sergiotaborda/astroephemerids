@@ -1,6 +1,7 @@
 package astroephemeris.coordinates;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.TimeZone;
@@ -115,4 +116,10 @@ public class ObservationPoint {
 //	
 //		return RightAscention.from(st);
 	 }
+
+
+
+	public ObservationPoint withTime(ZonedDateTime otherTime) {
+		return new ObservationPoint(this.location, otherTime);
+	}
 }

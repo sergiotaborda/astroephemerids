@@ -12,6 +12,7 @@ import astroephemeris.astrology.PorphyryHouseSystem;
 import astroephemeris.astrology.RegiomontanusHouseSystem;
 import astroephemeris.astrology.SignPosition;
 import astroephemeris.catalog.Centaur;
+import astroephemeris.catalog.MeanLilith;
 import astroephemeris.catalog.Moon;
 import astroephemeris.catalog.MoonTrueNode;
 import astroephemeris.catalog.Planet;
@@ -22,21 +23,27 @@ import astroephemeris.coordinates.GeoCoordinates;
 import astroephemeris.coordinates.ObservationPoint;
 import astroephemeris.coordinates.RightAscention;
 import astroephemeris.math.Angle;
+import astroephemeris.math.TimeExpantion;
 
 public class EphemeridTableGenerator {
 
 	public static void main(String[] args) {
 		
-		GeoCoordinates geo = GeoCoordinates.at("39° 49' 26'' N" , "7°29'31'' W");
-		
+//		ObservationPoint point = ObservationPoint.at(
+//				GeoCoordinates.at("39° 49' 26'' N" , "7°29'31'' W"),
+//				ZonedDateTime.of(1978, 6, 13, 4, 15, 0, 0, ZoneId.of("Europe/Lisbon"))
+//	    );
+//		
 		ObservationPoint point = ObservationPoint.at(
-				geo,
-				ZonedDateTime.of(1978, 6, 13, 4, 15, 0, 0, ZoneId.of("Europe/Lisbon"))
+				GeoCoordinates.at(astroephemeris.math.Number.from(-19.7474) ,astroephemeris.math.Number.from(-47.9392)),
+				ZonedDateTime.of(1977, 8, 15, 23, 45, 0, 0, ZoneId.of("America/Sao_Paulo"))
 	    );
 		
 		var st = point.localSideralTime();
 		
 		System.out.println("At " + st.toString());
+		
+	
 //		
 //		var position = new AscendentPositionCalculator().positionFrom(point);
 //		
@@ -73,15 +80,29 @@ public class EphemeridTableGenerator {
 		
 
 		var chart = new ChartCalculator()
-				.addAstro(new Sun())
-				.addAstro(new Moon())
-				.addAstro(new MoonTrueNode())
-				.addAstros(Centaur.values())
-				.addAstros(Planet.values())
+				//.addAstro(new Sun())
+				//.addAstro(new Moon())
+				.addAstro(new MeanLilith())
+				//.addAstro(new MoonTrueNode())
+			//	.addAstros(Centaur.values())
+				//.addAstros(Planet.values())
 				//.setSkyCalculator( new TestSkyCalculator())
-				.setHouseSystem(new PlacidusHouseSystem())
-				.addChartPointCalculator(new ArabicPartsCalculator())
+			//	.setHouseSystem(new PlacidusHouseSystem())
+			//	.addChartPointCalculator(new ArabicPartsCalculator())
 				.calculate(point);
+		
+		var L0 = TimeExpantion.of(Angle.degrees(218.31617d), Angle.degrees(481267.88088), Angle.degrees(4.06/3600.0) );//  218.31617 + 481267.88088*T - 4.06*T*T/3600.0
+		
+		var T = point.factorT();
+		
+		var l0 = L0.apply(T);
+		System.out.println("LO=" + SignPosition.from(l0));
+		chart.getPoint(new Moon()).ifPresent(r -> {
+			
+			System.out.println(SignPosition.from( r.signPosition().angle().minus(l0)));
+			System.out.println(SignPosition.from( r.signPosition().angle().plus(l0)));
+		});
+		
 		
 	
 		for (var p : chart.points()) {
