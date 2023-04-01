@@ -6,8 +6,8 @@ import astroephemeris.math.Angle;
 import astroephemeris.math.Number;
 import astroephemeris.math.TimeExpantion;
 
-public record Astro(
-		 AstroKey key,
+public record AstroData(
+		 PointOfInterest key,
 	     List<Double> L, // meanLongitude
 	     List<Double> a, // semiMajorAxisLength
 	     List<Double> e, // eccentricity

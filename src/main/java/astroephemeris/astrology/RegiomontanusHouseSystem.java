@@ -3,6 +3,7 @@ package astroephemeris.astrology;
 import java.util.List;
 
 import astroephemeris.HeliocentricDynamics;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.coordinates.RightAscention;
 import astroephemeris.math.Angle;
 
@@ -28,20 +29,13 @@ public class RegiomontanusHouseSystem extends AbstractHouseSystem {
 				return Angle.atan2d(numerator, denominator);
 			}).toList();
 			
-		var mc = chart.getPoint(new MidHeaven()).orElseThrow();
-		var asc = chart.getPoint(new Ascendent()).orElseThrow();
+		var mc = chart.getPoint(PointOfInterest.MC).orElseThrow();
+		var asc = chart.getPoint(PointOfInterest.ASC).orElseThrow();
 		
 		chart.addHouse(new House(1, asc.signPosition()));
 		chart.addHouse(new House(2, SignPosition.from(RightAscention.from(cuspids.get(2)))));
 		chart.addHouse(new House(3, SignPosition.from(RightAscention.from(cuspids.get(3)))));
-//		
-//		chart.addHouse(new House(4, mc.signPosition().oposite()));
-//		chart.addHouse(new House(5, SignPosition.from(RightAscention.from(cuspids.get(0))).oposite()));
-//		chart.addHouse(new House(6, SignPosition.from(RightAscention.from(cuspids.get(1))).oposite()));
-//		chart.addHouse(new House(7, asc.signPosition().oposite()));
-//		chart.addHouse(new House(8, SignPosition.from(RightAscention.from(cuspids.get(2))).oposite()));
-//		chart.addHouse(new House(9, SignPosition.from(RightAscention.from(cuspids.get(3))).oposite()));
-		
+
 		chart.addHouse(new House(10, mc.signPosition()));
 		chart.addHouse(new House(11, SignPosition.from(RightAscention.from(cuspids.get(0)))));
 		chart.addHouse(new House(12, SignPosition.from(RightAscention.from(cuspids.get(1)))));

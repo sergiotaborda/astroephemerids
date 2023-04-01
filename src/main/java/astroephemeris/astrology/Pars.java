@@ -1,23 +1,11 @@
 package astroephemeris.astrology;
 
-import astroephemeris.catalog.AstroKey;
+import astroephemeris.catalog.NamedPointOfInterest;
+import astroephemeris.catalog.PointOfInterest;
 
-public enum Pars  implements AstroKey {
+public class Pars  implements PointOfInterest {
 	
-	FORTUNE("Fortune", '\u2647'); // TODO put symbol correct
+	public static final PointOfInterest FORTUNE = new NamedPointOfInterest("Fortune", '\u2647'); // TODO put symbol correct
 
-	
-	private char symbol;
-	private String name;
-
-	Pars(String name, char symbol){
-		this.name = name;
-		this.symbol = symbol;
-	}
-
-	@Override
-	public String value() {
-		return name;
-	}
 
 }

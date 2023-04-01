@@ -1,16 +1,21 @@
 package astroephemeris;
 
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.coordinates.AstroCoordinate;
 import astroephemeris.coordinates.AstroPosition;
 import astroephemeris.coordinates.ObservationPoint;
 import astroephemeris.coordinates.RightAscention;
 import astroephemeris.math.Angle;
 
-public class AscendentPositionCalculator implements AstroPositionCalculator{
+public class AscendentPositionCalculator extends SingleAstroPositionCalculator{
 	
 
+	public AscendentPositionCalculator() {
+		super(PointOfInterest.ASC);
+	}
+
 	@Override
-	public AstroPosition positionFrom(ObservationPoint point) {
+	public AstroPosition calculatePosition(ObservationPoint point) {
 	    var latitude = point.location().latitude();
 		var localSiderealTime = point.localSideralTime();
 		var obliquityEcliptic = HeliocentricDynamics.obliquityEcliptic(point);
@@ -44,5 +49,6 @@ public class AscendentPositionCalculator implements AstroPositionCalculator{
 	    );
 	    
 	}
+
 
 }

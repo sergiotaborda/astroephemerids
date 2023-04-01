@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import astroephemeris.astrology.Sign;
 import astroephemeris.astrology.SignPosition;
-import astroephemeris.catalog.Planet;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.coordinates.GeoCoordinates;
 import astroephemeris.coordinates.ObservationPoint;
 import astroephemeris.coordinates.RightAscention;
@@ -54,7 +54,7 @@ public class TestPositions {
 		
 		var sun = new SunPositionCalculator();
 	
-		var position = sun.positionFrom(point);
+		var position = sun.calculatePosition(point);
 		
 	
 		var sign = SignPosition.from(position.astoCoordinate().rightAscention());
@@ -66,9 +66,9 @@ public class TestPositions {
 	@Test
 	public void mercuryPosition() {
 
-		var calculator = PlanetPositionCalculator.of(Planet.MERCURY);
+		var calculator = new PlanetPositionCalculator();
 	
-		var position = calculator.positionFrom(point);
+		var position = calculator.calculatePosition(PointOfInterest.MERCURY, point);
 		
 	
 		var sign = SignPosition.from(position.astoCoordinate().rightAscention());
@@ -80,7 +80,7 @@ public class TestPositions {
 	@Test
 	public void mcPosition() {
 
-		var position =  new MidHeavenPositionCalculator().positionFrom(point);
+		var position =  new MidHeavenPositionCalculator().calculatePosition(point);
 		
 		var sign = SignPosition.from(position.astoCoordinate().rightAscention());
 		
@@ -91,7 +91,7 @@ public class TestPositions {
 	@Test
 	public void ascPosition() {
 
-		var position =  new AscendentPositionCalculator().positionFrom(point);
+		var position =  new AscendentPositionCalculator().calculatePosition(point);
 		
 		var sign = SignPosition.from(position.astoCoordinate().rightAscention());
 		
@@ -109,7 +109,7 @@ public class TestPositions {
 				ZonedDateTime.of(2016, 11, 2, 22, 17, 30, 0, ZoneId.of("Europe/Amsterdam"))
 	    );
 		
-		var position =  new AscendentPositionCalculator().positionFrom(point);
+		var position =  new AscendentPositionCalculator().calculatePosition(point);
 		
 		var sign = SignPosition.from(position.astoCoordinate().rightAscention());
 		

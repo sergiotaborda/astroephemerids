@@ -1,9 +1,6 @@
 package astroephemeris.astrology;
 
-import java.util.List;
-
-import astroephemeris.HeliocentricDynamics;
-import astroephemeris.coordinates.RightAscention;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.math.Angle;
 
 public class AlcabitiusHouseSystem extends AbstractHouseSystem {
@@ -13,9 +10,8 @@ public class AlcabitiusHouseSystem extends AbstractHouseSystem {
 	public Chart calculateHouses(Chart chart) {
 		//http://radixpro.com/project-houses/house-systems/alcabitius/
 		
-		var RAMC = chart.observationPoint().localSideralTime().toDegrees();
-		var asc = chart.getPoint(new Ascendent()).orElseThrow().signPosition().angle();
-		var mc = chart.getPoint(new MidHeaven()).orElseThrow().signPosition().angle();
+		var asc = chart.getPoint(PointOfInterest.ASC).orElseThrow().signPosition().angle();
+		var mc = chart.getPoint(PointOfInterest.MC).orElseThrow().signPosition().angle();
 
 		var increment = mc.minus(asc).abs();
 		

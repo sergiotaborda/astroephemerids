@@ -194,6 +194,11 @@ public final class Angle implements AdditiveGroup<Angle> , ScalableGroup<Angle>,
 		return degrees(degrees + minutes / 60d);
 	}
 
+	
+	public Angle inverse() {
+		return new Angle(this.valueInDegrees.invert());
+	}
+
 
 
 	

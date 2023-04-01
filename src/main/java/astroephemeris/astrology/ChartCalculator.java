@@ -1,64 +1,68 @@
 package astroephemeris.astrology;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import astroephemeris.AscendentPositionCalculator;
+import astroephemeris.MeanLilithPositionCalculator;
 import astroephemeris.MidHeavenPositionCalculator;
-import astroephemeris.NasaHorizonsSkyCalculator;
-import astroephemeris.Sky;
-import astroephemeris.SkyCalculator;
-import astroephemeris.catalog.AstroKey;
+import astroephemeris.NasaHorizonsPositionCalculator;
+import astroephemeris.PointOfInterestPositionCalculator;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.coordinates.ObservationPoint;
 import astroephemeris.math.Angle;
 
 public class ChartCalculator {
 
 	private List<ChartPointCalculator> calculators = new LinkedList<>();
-	private SkyCalculator skyCalculator = new NasaHorizonsSkyCalculator();
-	private List<AstroKey> astros = new LinkedList<>();
+	private List<PointOfInterest> pointsOfInterest = new LinkedList<>();
 	private HouseSystem houseSystem = new EqualHouseSystem();
+	
+	
+	public ChartCalculator() {
+		this.pointsOfInterest.add(PointOfInterest.ASC);
+		this.pointsOfInterest.add(PointOfInterest.MC);
+		
+		this.addPointCalculator(new AscendentPositionCalculator());
+		this.addPointCalculator(new MidHeavenPositionCalculator());
+		this.addPointCalculator(new MeanLilithPositionCalculator());
+		this.addPointCalculator(new NasaHorizonsPositionCalculator());
+	}
+	
+	public ChartCalculator addPointCalculator(PointOfInterestPositionCalculator calculator) {
+		this.calculators.add(new ChartPointCalculator() {
+
+			@Override
+			public void addPoints(Chart chart) {
+				for (var p : pointsOfInterest) {
+					if (calculator.canCalculatePosition(p)) {
+						var position = calculator.calculatePosition(p, chart.observationPoint());
+						chart.addPoint(new ChartPoint(p, SignPosition.from(position.astoCoordinate().rightAscention())));
+					}
+				}
+			}
+			
+		});
+		return this;
+	}
+	
 	
 	public Chart calculate(ObservationPoint point) {
 		
-		var sky = new Sky();
-		
-		sky.addAstros(astros);
-		
-		sky = skyCalculator.calculate(sky, point);
-		
-		var chart = new Chart( point , sky, houseSystem);
-		
-		
-		var position = new AscendentPositionCalculator().positionFrom(point);
-		
-		chart.addPoint(new ChartPoint(new Ascendent(), SignPosition.from(position.astoCoordinate().rightAscention())));
 	
+		var chart = new Chart( point, houseSystem);
 		
-	    position = new MidHeavenPositionCalculator().positionFrom(point);
-		
-		chart.addPoint(new ChartPoint(new MidHeaven(), SignPosition.from(position.astoCoordinate().rightAscention())));
-	
-		
-		houseSystem.calculateHouses(chart);
-		
-		
-		for (var astro : sky.astros()) {
-			
-		    sky.getAstroPosition(astro).ifPresent(	p -> {
-			    var s  = SignPosition.from(p.astoCoordinate().rightAscention());
-				
-			    chart.addPoint(new ChartPoint(astro,  s));
-		    });
-			
-		}
-		
+
 		for (var c : calculators) {
 			c.addPoints(chart);
 		}
+		
+		// calculate houses
+		
+		houseSystem.calculateHouses(chart);
+		
 		
 		// calculate aspects
 		var points = chart.points();
@@ -72,7 +76,7 @@ public class ChartCalculator {
 				var jp = points.get(j);
 				
 				aspectOf( ip.signPosition().angle().minus(jp.signPosition().angle()).abs())
-				.ifPresent(aspect -> chart.addAspect(ip.astro(), jp.astro(), aspect));
+				.ifPresent(aspect -> chart.addAspect(ip.point(), jp.point(), aspect));
 
 			}
 		}
@@ -99,25 +103,28 @@ public class ChartCalculator {
 		return this;
 	}
 	
-	public ChartCalculator setSkyCalculator(SkyCalculator calculator) {
-		this.skyCalculator = calculator;
-		return this;
-	}
-	
 	public ChartCalculator addChartPointCalculator(ChartPointCalculator calculator) {
 		this.calculators.add(calculator);
 		return this;
 	}
 	
-	public ChartCalculator addAstro(AstroKey astro) {
-		this.astros.add(astro);
+	public ChartCalculator addPoint(PointOfInterest point) {
+		this.pointsOfInterest.add(point);
 		return this;
 	}
 	
-	public <A extends AstroKey> ChartCalculator addAstros(A ... keys) {
+	public <A extends PointOfInterest> ChartCalculator addPoints(A ... points) {
 		
-		for (var k : keys) {
-			addAstro(k);
+		for (var p : points) {
+			addPoint(p);
+		}
+		return this;
+	}
+	
+	public <A extends PointOfInterest> ChartCalculator addPoints(Collection<A> points) {
+		
+		for (var p : points) {
+			addPoint(p);
 		}
 		return this;
 	}

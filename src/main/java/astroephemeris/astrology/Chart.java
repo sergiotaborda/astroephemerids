@@ -1,36 +1,32 @@
 package astroephemeris.astrology;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import astroephemeris.Sky;
-import astroephemeris.catalog.AstroKey;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.coordinates.ObservationPoint;
 
 public class Chart {
 
 	
 	private ObservationPoint point;
-	private Sky sky;
 	private HouseSystem houseSystem;
-	private Map<String, ChartPoint> points = new LinkedHashMap<>();
+	private Map<PointOfInterest, ChartPoint> points = new LinkedHashMap<>();
 
 	private Map<Integer, House> houses = new HashMap<>();
-	private Map<AstroKey, Map<AstroKey, Aspect>> aspectsMapping = new HashMap<>();
+	private Map<AspectKey, Aspect> aspectsMapping = new HashMap<>();
+	private Map<PointOfInterest,Integer> pointsHouses = new HashMap<>();
 	
-	public Chart(ObservationPoint point, Sky sky, HouseSystem houseSystem) {
+	public Chart(ObservationPoint point, HouseSystem houseSystem) {
 		this.point = point;
-		this.sky = sky;
 		this.houseSystem = houseSystem;
 	}
 
 	public void addPoint(ChartPoint chartPoint) {
-		this.points.put(chartPoint.astro().value(), chartPoint);
+		this.points.put(chartPoint.point(), chartPoint);
 	}
 	
 	public List<ChartPoint> points(){
@@ -50,12 +46,18 @@ public class Chart {
 		this.houses.put(house.number(), house);
 	}
 
-	public void addAspect(AstroKey a, AstroKey b, Aspect aspect) {
-		 aspectsMapping.computeIfAbsent(a, (k) -> new HashMap<>()).put(b, aspect);
+	public void addAspect(PointOfInterest a, PointOfInterest b, Aspect aspect) {
+		if (a != null && b != null) {
+			 aspectsMapping.put(new AspectKey(a,b), aspect);
+		}
+		
 	}
 
-	public Optional<Aspect> aspectBetween(AstroKey a, AstroKey b) {
-		 return Optional.ofNullable(aspectsMapping.get(a)).map(it -> it.get(b));
+	public Optional<Aspect> aspectBetween(PointOfInterest a, PointOfInterest b) {
+		 if (a != null && b != null) {
+			 return Optional.ofNullable(aspectsMapping.get(new AspectKey(a,b)));
+		 }
+		 return Optional.empty();
 	}
 
 	public ObservationPoint observationPoint() {
@@ -63,7 +65,52 @@ public class Chart {
 	}
 
 	
-	public Optional<ChartPoint> getPoint(AstroKey astroKey) {
-		return Optional.ofNullable(points.get(astroKey.value()));
+	public Optional<ChartPoint> getPoint(PointOfInterest point) {
+		return Optional.ofNullable(points.get(point));
+	}
+
+
+	public Optional<Integer> houseof(PointOfInterest point) {
+		var h = pointsHouses.get(point);
+		if (h != null) {
+			return Optional.of(h);
+		}
+		
+		var pp = points.get(point);
+		
+		for (var entry : houses.entrySet()) {
+			if (pp.signPosition().angle().compareTo(entry.getValue().cuspid().angle()) <= 0) {
+				var previous = houses.get((entry.getKey() - 1) % 12);
+				if (pp.signPosition().angle().compareTo(previous.cuspid().angle()) >= 0) {
+					pointsHouses.put(point, entry.getKey());
+					return Optional.of(entry.getKey());
+				}
+			}
+		}
+		return Optional.empty();
+	}
+}
+
+class AspectKey {
+	
+	PointOfInterest a;
+	PointOfInterest b;
+	
+	AspectKey(PointOfInterest a, PointOfInterest b){
+		this.a = a;
+		this.b = b;
+	}
+	
+	@Override
+	public int hashCode() {
+		return a.hashCode() ^ b.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		return  other instanceof AspectKey that
+				&& ( ( this.a.equals(that.a) &&  this.b.equals(that.b))
+					|| ( this.a.equals(that.b) &&  this.b.equals(that.a))
+				);
 	}
 }

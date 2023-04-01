@@ -1,6 +1,7 @@
 package astroephemeris.astrology;
 
 import astroephemeris.HeliocentricDynamics;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.math.Angle;
 import astroephemeris.math.Number;
 
@@ -22,8 +23,8 @@ public class PlacidusHouseSystem extends AbstractHouseSystem {
 		var three = runB(RAMC, E, L, 150, Number.from(3));
 
 			
-		var mc = chart.getPoint(new MidHeaven()).orElseThrow();
-		var asc = chart.getPoint(new Ascendent()).orElseThrow();
+		var mc = chart.getPoint(PointOfInterest.MC).orElseThrow();
+		var asc = chart.getPoint(PointOfInterest.ASC).orElseThrow();
 		
 		chart.addHouse(new House(1, asc.signPosition()));
 		chart.addHouse(new House(2, SignPosition.from(two)));

@@ -6,6 +6,7 @@ import astroephemeris.coordinates.ObservationPoint;
 
 public class NasaHorizonsSkyCalculator implements SkyCalculator {
 	
+	private static final NasaHorizonsPositionCalculator CALCULATOR = new NasaHorizonsPositionCalculator();
 	
 	public NasaHorizonsSkyCalculator() {
 		
@@ -15,9 +16,9 @@ public class NasaHorizonsSkyCalculator implements SkyCalculator {
 	public Sky calculate(Sky sky, ObservationPoint point) {
 	
 		
-		sky.astros().stream().map(astro -> 
-				 NasaHorizonsPositionCalculator.forAstro(astro).asyncPositionFrom(point).thenApply( position -> {
-					 sky.setAstroPosition(astro, position);
+		sky.pointsOfInterest().stream().map(astro -> 
+				  CALCULATOR.asyncPositionFrom(astro, point).thenApply( position -> {
+					 sky.setPointPosition(astro, position);
 					 return sky;
 				 })) .map(CompletableFuture::join)
 		         .toList();

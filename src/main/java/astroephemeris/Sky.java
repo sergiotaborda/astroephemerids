@@ -2,33 +2,38 @@ package astroephemeris;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import astroephemeris.catalog.AstroKey;
-import astroephemeris.catalog.Planet;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.coordinates.AstroPosition;
 
 public class Sky {
 
 	
-	private List<String> astros = new ArrayList<>();
-	private Map<String, AstroPosition> astroPositions = new HashMap<>();
+	private List<PointOfInterest> pointsOfInterest = new ArrayList<>();
+	private Map<PointOfInterest, AstroPosition> astroPositions = new HashMap<>();
 	
-	public Sky addAstro(AstroKey key) {
-		if (!key.value().equals(Planet.EARTH.value())){
-			astros.add(key.value());
+	public Sky addAstro(PointOfInterest pointOfInterest) {
+		if (!pointOfInterest.equals(PointOfInterest.EARTH)){
+			pointsOfInterest.add(pointOfInterest);
 		}
 	
 		return this;
 	}
 	
-	public <A extends AstroKey> Sky addAstros(A ... keys) {
+	public <A extends PointOfInterest> Sky addPoints(A ... points) {
+		
+		for (var k : points) {
+			addAstro(k);
+		}
+		return this;
+	}
+	
+	public <A extends PointOfInterest> Sky addAstros(Collection<A> keys) {
 		
 		for (var k : keys) {
 			addAstro(k);
@@ -36,30 +41,15 @@ public class Sky {
 		return this;
 	}
 	
-	public <A extends AstroKey> Sky addAstros(Collection<A> keys) {
-		
-		for (var k : keys) {
-			addAstro(k);
-		}
-		return this;
+	public List<PointOfInterest> pointsOfInterest() {
+		return Collections.unmodifiableList(pointsOfInterest);
 	}
 	
-	public List<AstroKey> astros() {
-		return astros.stream().map(it -> new AstroKey() {
-
-			@Override
-			public String value() {
-				return it;
-			}
-			}
-		).collect(Collectors.toList());
+	public void setPointPosition(PointOfInterest key, AstroPosition astroPosition) {
+		astroPositions.put(key, astroPosition);
 	}
 	
-	public void setAstroPosition(AstroKey key, AstroPosition astroPosition) {
-		astroPositions.put(key.value(), astroPosition);
-	}
-	
-	public Optional<AstroPosition> getAstroPosition(AstroKey key) {
-		return Optional.ofNullable(astroPositions.get(key.value()));
+	public Optional<AstroPosition> getPointPosition(PointOfInterest point) {
+		return Optional.ofNullable(astroPositions.get(point));
 	}
 }

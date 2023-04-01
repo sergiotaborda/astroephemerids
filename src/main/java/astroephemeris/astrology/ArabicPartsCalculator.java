@@ -1,7 +1,6 @@
 package astroephemeris.astrology;
 
-import astroephemeris.catalog.Moon;
-import astroephemeris.catalog.Sun;
+import astroephemeris.catalog.PointOfInterest;
 
 public class ArabicPartsCalculator implements ChartPointCalculator {
 
@@ -9,9 +8,9 @@ public class ArabicPartsCalculator implements ChartPointCalculator {
 	public void addPoints(Chart chart) {
 		// https://jessicadavidson.co.uk/2016/03/12/how-to-calculate-the-part-of-fortune/
 		
-		var asc = chart.getPoint(new Ascendent()).orElseThrow().signPosition().angle();
-		var sun = chart.getPoint(new Sun()).orElseThrow().signPosition().angle();;
-		var moon = chart.getPoint(new Moon()).orElseThrow().signPosition().angle();;
+		var asc = chart.getPoint(PointOfInterest.ASC).orElseThrow().signPosition().angle();
+		var sun = chart.getPoint(PointOfInterest.SUN).orElseThrow().signPosition().angle();;
+		var moon = chart.getPoint(PointOfInterest.MOON).orElseThrow().signPosition().angle();;
 		
 		var isDay = chart.observationPoint().utcTime().getHour() < 12;
 		var parsFortune = isDay

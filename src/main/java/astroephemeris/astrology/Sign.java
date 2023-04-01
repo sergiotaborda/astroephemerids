@@ -1,27 +1,46 @@
 package astroephemeris.astrology;
 
+import java.util.Optional;
+
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.math.Angle;
 
 public enum Sign {
 
-	ARIES('\u2648'),
-	TAURUS('\u2649'),
-	GEMINI('\u264A'),
-	CANCER('\u264B'),
-	LEO('\u264C'),
-	VIRGIN('\u264D'),
-	LIBRA('\u264E'),
-	SCORPIUS('\u264F'),
-	SAGIATARIUS('\u2650'),
-	CAPRICORD('\u2651'),
-	AQUARIUS('\u2652'),
-	PIXIES('\u2653');
-
+	ARIES('\u2648', PointOfInterest.MARS),
+	TAURUS('\u2649', PointOfInterest.VENUS, PointOfInterest.CERES),
+	GEMINI('\u264A', PointOfInterest.MERCURY),
+	CANCER('\u264B',PointOfInterest.MOON),
+	LEO('\u264C',PointOfInterest.SUN),
+	VIRGIN('\u264D', PointOfInterest.MERCURY),
+	LIBRA('\u264E',PointOfInterest.VENUS),
+	SCORPIUS('\u264F', PointOfInterest.MARS, PointOfInterest.PLUTO),
+	SAGIATARIUS('\u2650', PointOfInterest.JUPITER),
+	CAPRICORD('\u2651', PointOfInterest.SATURN),
+	AQUARIUS('\u2652', PointOfInterest.SATURN, PointOfInterest.URANUS),
+	PIXIES('\u2653',PointOfInterest.JUPITER, PointOfInterest.NEPTUNE);
 
 	private char symbol;
+	private PointOfInterest primaryRegent;
+	private PointOfInterest secondaryRegent;
 
-	Sign(char symbol) {
+	Sign(char symbol, PointOfInterest primaryRegent) {
 		this.symbol = symbol;
+		this.primaryRegent = primaryRegent;
+	}
+
+	Sign(char symbol, PointOfInterest primaryRegent, PointOfInterest secondaryRegent) {
+		this.symbol = symbol;
+		this.primaryRegent = primaryRegent;
+		this.secondaryRegent = secondaryRegent;
+	}
+	
+	public PointOfInterest primaryRegent() {
+		return primaryRegent;
+	}
+	
+	public Optional<PointOfInterest> secondaryRegent() {
+		return Optional.ofNullable(secondaryRegent);
 	}
 
 	public static Sign from(Angle angle) {

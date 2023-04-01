@@ -1,6 +1,6 @@
 package astroephemeris;
 
-import astroephemeris.catalog.Astro;
+import astroephemeris.catalog.AstroData;
 import astroephemeris.coordinates.AstroCoordinate;
 import astroephemeris.coordinates.CubicCoordinate;
 import astroephemeris.coordinates.ObservationPoint;
@@ -19,7 +19,7 @@ public class HeliocentricDynamics {
 	 * @param obs
 	 * @return
 	 */
-    public static CubicCoordinate positionFrom(ObservationPoint point, Astro p) {
+    public static CubicCoordinate positionFrom(ObservationPoint point, AstroData p) {
 
     	if (p == null) {
     		return CubicCoordinate.ORIGIN;

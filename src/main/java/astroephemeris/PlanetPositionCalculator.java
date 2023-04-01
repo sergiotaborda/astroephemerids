@@ -1,27 +1,40 @@
 package astroephemeris;
 
+import java.util.Set;
+
 import astroephemeris.catalog.AstroCatalog;
-import astroephemeris.catalog.Planet;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.coordinates.AstroPosition;
 import astroephemeris.coordinates.ObservationPoint;
 
-public class PlanetPositionCalculator implements AstroPositionCalculator{
+public class PlanetPositionCalculator implements PointOfInterestPositionCalculator{
 
+	private static final Set<PointOfInterest> planets = Set.of(
+			PointOfInterest.MERCURY,
+			PointOfInterest.VENUS,
+			PointOfInterest.MARS,
+			PointOfInterest.JUPITER,
+			PointOfInterest.SATURN,
+			PointOfInterest.URANUS,
+			PointOfInterest.NEPTUNE,
+			PointOfInterest.PLUTO
+	);
 	
-	public static AstroPositionCalculator of(Planet planet) {
-		return new PlanetPositionCalculator(planet);
-	}
-	
-	private final Planet planet;
 
-	PlanetPositionCalculator(Planet planet) {
-		this.planet = planet;
+	@Override
+	public boolean canCalculatePosition(PointOfInterest planet) {
+		return planets.contains(planet);
 	}
+
 	
 	@Override
-	public AstroPosition positionFrom(ObservationPoint point) {
-        var earth = AstroCatalog.instance().planet(Planet.EARTH);
-        var astro = AstroCatalog.instance().planet(planet);
+	public AstroPosition calculatePosition(PointOfInterest planet, ObservationPoint point) {
+		if (!canCalculatePosition(planet)) {
+			throw new IllegalArgumentException("Cannto calculate " + planet);
+		}
+		
+	    var earth = AstroCatalog.instance().planet(PointOfInterest.EARTH).orElseThrow();
+        var astro = AstroCatalog.instance().planet(planet).orElseThrow();
         
         var planet_xyz = HeliocentricDynamics.positionFrom(point, astro);
         var earth_xyz = HeliocentricDynamics.positionFrom(point, earth);
@@ -34,7 +47,6 @@ public class PlanetPositionCalculator implements AstroPositionCalculator{
 	        	radec,
 	        	altaz
 	    );
-        
 	}
 
 }

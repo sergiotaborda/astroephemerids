@@ -54,7 +54,7 @@ public final class SignPosition {
 		return angle.hashCode();
 	}
 
-	
+
 	public SignPosition oposite() {
 		return SignPosition.from(angle.plus(Angle.degrees(180.0)).simplify());
 	}

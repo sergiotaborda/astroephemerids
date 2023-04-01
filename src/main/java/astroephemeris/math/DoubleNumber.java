@@ -47,7 +47,7 @@ public final class DoubleNumber implements astroephemeris.math.Number {
 	}
 
 	public Number invert() {
-		return new DoubleNumber(-this.value);
+		return new DoubleNumber(1/this.value);
 	}
 
 	public double toDouble() {

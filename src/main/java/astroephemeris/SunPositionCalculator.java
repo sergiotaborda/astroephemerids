@@ -1,17 +1,21 @@
 package astroephemeris;
 
 import astroephemeris.catalog.AstroCatalog;
-import astroephemeris.catalog.Planet;
+import astroephemeris.catalog.PointOfInterest;
 import astroephemeris.coordinates.AstroPosition;
 import astroephemeris.coordinates.ObservationPoint;
 import astroephemeris.coordinates.SpacialCoordinate;
 
-public class SunPositionCalculator implements AstroPositionCalculator {
+public class SunPositionCalculator extends SingleAstroPositionCalculator {
+
+	protected SunPositionCalculator() {
+		super(PointOfInterest.SUN);
+	}
 
 	@Override
-	public AstroPosition positionFrom(ObservationPoint point) {
+	public AstroPosition calculatePosition(ObservationPoint point) {
 	
-		    var earth = AstroCatalog.instance().planet(Planet.EARTH);
+		    var earth = AstroCatalog.instance().planet(PointOfInterest.EARTH).orElseThrow();
 
 	        var sun_xyz = SpacialCoordinate.origin();
 	        var earth_xyz = HeliocentricDynamics.positionFrom(point,earth);
