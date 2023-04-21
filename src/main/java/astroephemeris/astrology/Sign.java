@@ -60,7 +60,7 @@ public enum Sign {
 		throw new IllegalArgumentException();
 	}
 
-	Angle cuspid() {
+	public Angle cuspid() {
 		return 	Angle.degrees(ordinal() * 30);
 	}
 	

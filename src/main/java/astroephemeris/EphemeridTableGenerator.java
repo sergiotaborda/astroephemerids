@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import astroephemeris.astrology.ArabicPartsCalculator;
 import astroephemeris.astrology.ChartCalculator;
 import astroephemeris.astrology.ChartPoint;
@@ -24,13 +26,15 @@ import astroephemeris.coordinates.AstroPosition;
 import astroephemeris.coordinates.GeoCoordinates;
 import astroephemeris.coordinates.ObservationPoint;
 import astroephemeris.coordinates.RightAscention;
+import astroephemeris.draw.ChartDraw;
+import astroephemeris.draw.ChartDraw;
 import astroephemeris.math.Angle;
 import astroephemeris.writting.AsciiDocWriter;
 import astroephemeris.writting.AsciiDocWriter;
 
 public class EphemeridTableGenerator {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		ObservationPoint point = ObservationPoint.at(
 				GeoCoordinates.at("39° 49' 26'' N" , "7°29'31'' W"),
@@ -195,7 +199,10 @@ public class EphemeridTableGenerator {
 			print(c, 0);
 		}
 	
-
+		
+		var image = new ChartDraw().draw(chart);
+		ImageIO.write(image, "PNG", new File("chart.png"));
+	     
 
 	}
 

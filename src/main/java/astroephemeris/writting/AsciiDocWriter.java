@@ -14,6 +14,10 @@ public class AsciiDocWriter implements Writer {
 		
 		writer.println();
 		
+		writer.println("image::chart.png[]");
+		
+		writer.println();
+		
 		writer.append("== ").append("Planetas").println();
 		
 		writer.println();
